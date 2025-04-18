@@ -6,13 +6,16 @@ This project provides a Dockerized monitoring stack with **Prometheus**, **Grafa
 
 ## Prerequisites
 
-1. Install **Docker** and **Docker Compose**:
-   - [Docker installation guide](https://docs.docker.com/get-docker/)
-   - [Docker Compose installation guide](https://docs.docker.com/compose/install/)
+1. **Install Docker and Docker Compose**:
+   - Ensure Docker and Docker Compose are installed on your system:
+     - [Docker installation guide](https://docs.docker.com/get-docker/)
+     - [Docker Compose installation guide](https://docs.docker.com/compose/install/)
 
-2. Create required directories:
+2. **Create Required Directories**:
+   Create the following directories to persist data:
    ```bash
-   mkdir -p grafana-data prom-data
+   mkdir -p grafana-data
+   mkdir -p prom-data
    ```
 
 ---
@@ -30,66 +33,41 @@ This project provides a Dockerized monitoring stack with **Prometheus**, **Grafa
 
 ## Setup Instructions
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd Dockerized-Prometheus-Stack
-   ```
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd Dockerized-Prometheus-Stack
+```
 
-2. Start the stack:
-   ```bash
-   docker-compose up -d
-   ```
+### 2. Start the Stack
+Use Docker Compose to start the stack:
+```bash
+docker-compose up -d
+```
 
-3. Verify services:
-   - Prometheus: [http://localhost:9090](http://localhost:9090)
-   - Blackbox Exporter: [http://localhost:9115](http://localhost:9115)
-   - Grafana: [http://localhost:3000](http://localhost:3000)
+### 3. Verify Services
+- **Prometheus**: [http://localhost:9090](http://localhost:9090)
+- **Blackbox Exporter**: [http://localhost:9115](http://localhost:9115)
+- **Grafana**: [http://localhost:3000](http://localhost:3000)
 
-4. Default Grafana credentials:
-   - Username: `admin`
-   - Password: `123456`
-
----
-
-## Configuration
-
-- **Prometheus**: Define scrape targets in `prometheus.yml`. Example:
-  ```yaml
-  scrape_configs:
-    - job_name: 'node_exporter'
-      static_configs:
-        - targets: ['localhost:9100']
-  ```
-
-- **Blackbox Exporter**: Define probes in `blackbox.yml`. Example:
-  ```yaml
-  modules:
-    http_2xx:
-      prober: http
-      timeout: 5s
-      http:
-        method: GET
-        valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
-        valid_status_codes: [200]
-  ```
-
-- **Grafana**: Add Prometheus as a data source via **Configuration > Data Sources** with:
-  - **Type**: Prometheus
-  - **URL**: `http://prometheus:9090`
+### 4. Default Grafana Credentials
+- **Username**: `admin`
+- **Password**: `123456`
 
 ---
 
 ## Securing File and Folder Permissions
 
-Run the following commands to secure configuration files and data directories:
+To ensure secure access to configuration files and data directories, run the following commands:
 
+### Configuration Files
 ```bash
-# Configuration files
 chown root:root blackbox.yml prometheus.yml compose.yml
 chmod 640 blackbox.yml prometheus.yml
+```
 
-# Data directories
+### Data Directories
+```bash
 chown -R 65534:65534 prom-data
 chmod -R 700 prom-data
 
@@ -101,21 +79,27 @@ chmod -R 700 grafana-data
 
 ## Setting Up Node Exporter on Hosts
 
-1. Create a Node Exporter user:
+To monitor host metrics, set up the Prometheus Node Exporter on your hosts:
+
+1. **Create a Node Exporter User**:
    ```bash
    sudo useradd --no-create-home --shell /bin/false node_exporter
    ```
 
-2. Download and install Node Exporter:
+2. **Download Node Exporter**:
    ```bash
    wget https://github.com/prometheus/node_exporter/releases/download/v1.9.1/node_exporter-1.9.1.linux-amd64.tar.gz
+   ```
+
+3. **Extract and Move the Binary**:
+   ```bash
    sudo tar xvf node_exporter-1.9.1.linux-amd64.tar.gz
    sudo mv node_exporter-1.9.1.linux-amd64/node_exporter /usr/local/bin/
    sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
    sudo rm -rf node_exporter-1.9.1.linux-amd64*
    ```
 
-3. Create a systemd service file:
+4. **Create a Systemd Service File**:
    ```bash
    sudo nano /etc/systemd/system/node_exporter.service
    ```
@@ -139,35 +123,38 @@ chmod -R 700 grafana-data
    WantedBy=multi-user.target
    ```
 
-4. Enable and start the service:
+5. **Enable and Start the Service**:
    ```bash
    sudo systemctl daemon-reload
    sudo systemctl enable node_exporter.service
    sudo systemctl start node_exporter.service
    ```
 
-5. Verify the service:
+6. **Verify the Service**:
+   Check the status of the Node Exporter:
    ```bash
    sudo systemctl status node_exporter.service
    ```
+
+   The Node Exporter will now be running and accessible on port `9100`.
 
 ---
 
 ## Best Practices
 
 1. **Secure Grafana**:
-   - Change the default admin password.
+   - Change the default Grafana admin password after the first login.
    - Use strong passwords or enable SSO.
 
 2. **Restrict Network Access**:
-   - Use a reverse proxy (e.g., NGINX) to secure services.
+   - Use a reverse proxy (e.g., NGINX) to secure access to services.
    - Restrict access to ports using firewall rules.
 
 3. **Backup Data**:
-   - Regularly back up `grafana-data/` and `prom-data/`.
+   - Regularly back up the `grafana-data/` and `prom-data/` directories.
 
 4. **Monitor Logs**:
-   - Use `docker-compose logs -f` for troubleshooting.
+   - Use `docker-compose logs -f` to monitor logs for troubleshooting.
 
 5. **Update Images**:
    - Periodically update Docker images:
