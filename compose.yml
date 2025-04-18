@@ -20,6 +20,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    networks:
+      - monitoring-stack
 
   blackbox_exporter:
     image: prom/blackbox-exporter:v0.26.0
@@ -39,6 +41,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    networks:
+      - monitoring-stack
 
   grafana:
     image: grafana/grafana:11.6.0
@@ -60,3 +64,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    networks:
+      - monitoring-stack
+
+networks:
+  monitoring-stack:
+    driver: bridge
+    name: monitoring-stack  # Explicitly set the network name
