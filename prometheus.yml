@@ -28,7 +28,7 @@ scrape_configs:
     static_configs:
        - targets:
          - 8.8.8.8
-         - 4.2.2.4
+        #  - 4.2.2.4
          - 1.1.1.1
     relabel_configs:
       - source_labels: [__address__]
@@ -49,12 +49,11 @@ scrape_configs:
         - "8.8.4.4"
         - "4.2.2.4"
         - "1.1.1.1"
-        - "5.202.100.101"
-        - "5.202.100.100"
+        # - "5.202.100.101"
+        # - "5.202.100.100"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
-#        replacement: "time.ir"
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
@@ -62,17 +61,20 @@ scrape_configs:
 
   ##______Blackbox HTTP________________##
   - job_name: 'blackbox-exporter-http'
-    scrape_interval: 10s
+    scrape_interval: 60s
     metrics_path: /probe
     params:
       module: [http_2xx]
     static_configs:
-      - targets: [https://aparat.com]
+      - targets: [https://rsspaces.com]
         labels:
-          hostname: aparat
-      - targets: [https://google.com]
+          hostname: Rsspaces
+      - targets: [https://inovativai.com]
         labels:
-          hostname: google.com
+          hostname: inovativai
+      - targets: [http://quantumints.com]
+        labels:
+          hostname: quantumints      
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
