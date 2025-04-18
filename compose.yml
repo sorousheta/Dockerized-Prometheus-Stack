@@ -1,6 +1,6 @@
 services:
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v3.3.0
     container_name: prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -22,7 +22,7 @@ services:
       start_period: 10s
 
   blackbox_exporter:
-    image: prom/blackbox-exporter
+    image: prom/blackbox-exporter:v0.26.0
     container_name: blackbox_exporter
     ports:
       - 9115:9115
@@ -41,7 +41,7 @@ services:
       start_period: 10s
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:11.6.0
     container_name: grafana
     ports:
       - 3000:3000
