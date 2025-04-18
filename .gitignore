@@ -1,0 +1,14 @@
+# Ignore data directories
+grafana-data/
+prom-data/
+
+# Ignore Docker-related files
+# *.yml
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore logs and temporary files
+*.log
+*.tmp

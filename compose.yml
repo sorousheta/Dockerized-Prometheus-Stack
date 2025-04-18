@@ -9,7 +9,7 @@ services:
       - 9090:9090
     restart: unless-stopped
     volumes:
-      - ./prometheus:/etc/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prom-data:/prometheus
     # user: "nobody:nobody"  # Add this line
     extra_hosts:
